@@ -39,6 +39,7 @@ export default function Login({navigation}) {
 
   useEffect(() => {
     GoogleSignin.configure();
+    GoogleSignin.signOut();
     const unsubscribe = auth().onAuthStateChanged(user => {
       if (user) {
         console.log(user.email);

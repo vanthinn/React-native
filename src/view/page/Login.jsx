@@ -43,6 +43,13 @@ export default function Login({navigation}) {
     const unsubscribe = auth().onAuthStateChanged(user => {
       if (user) {
         console.log(user.email);
+        Toast.show({
+          type: 'success',
+          text1: 'Sgin up Successfull  👋',
+          visibilityTime: 2000,
+          autoHide: true,
+          topOffset: 30,
+        });
         navigation.navigate('HomeDrawer');
       }
     });
@@ -95,20 +102,19 @@ export default function Login({navigation}) {
         .signInWithEmailAndPassword(Email, Password)
         .then(data => {
           console.log(data);
+          Toast.show({
+            type: 'success',
+            text1: 'Login Successfull  👋',
+            visibilityTime: 2000,
+            autoHide: true,
+            topOffset: 30,
+          });
         })
         .catch(error => {
           Alert.alert('Error', `${error.message}`, [
             {text: 'OK', onPress: () => console.log('OK Pressed')},
           ]);
         });
-
-      Toast.show({
-        type: 'success',
-        text1: 'Login Successfull  👋',
-        visibilityTime: 2000,
-        autoHide: true,
-        topOffset: 30,
-      });
     }
   };
 

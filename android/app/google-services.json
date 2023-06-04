@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "558330610947",
+    "firebase_url": "https://myapp-1f07f-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "myapp-1f07f",
     "storage_bucket": "myapp-1f07f.appspot.com"
   },
@@ -14,7 +15,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "558330610947-ac0a4qfdmfmoms31cgm7jinc60rnk3j8.apps.googleusercontent.com",
+          "client_id": "558330610947-rpp5bu973vjubarp8sm1cebukpkfvts3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

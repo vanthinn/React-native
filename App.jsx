@@ -6,7 +6,6 @@ import Login from './src/view/page/Login';
 import Signup from './src/view/page/Siginup';
 import Homepage from './src/view/page/Homepage';
 import Test from './src/view/page/test';
-import {View, Text} from 'react-native';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -14,10 +13,10 @@ const Drawer = createDrawerNavigator();
 const HomeDrawer = () => {
   return (
     <Drawer.Navigator
-      initialRouteName="Homepage"
+      initialRouteName="Homegae"
       screenOptions={{headerShown: false}}>
       <Drawer.Screen name="Homepage" component={Homepage} />
-      <Drawer.Screen name="Test" component={Test} />
+      <Drawer.Screen name="Info" component={Test} />
     </Drawer.Navigator>
   );
 };

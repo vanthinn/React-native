@@ -10,16 +10,18 @@ import React, {useState, useEffect} from 'react';
 import MapView, {Marker, PROVIDER_GOOGLE, Polyline} from 'react-native-maps';
 import GetLocation from 'react-native-get-location';
 import axios from 'react-native-axios';
-
 import Entypo from 'react-native-vector-icons/Entypo';
 import Octicons from 'react-native-vector-icons/Octicons';
 
+import database from '@react-native-firebase/database';
+
 export default function Homepage({navigation}) {
-  const [region, setRegion] = useState({});
-  // const [market, setMarket] = useState({
-  //   latitude: 16.0739,
-  //   longitude: 108.1499,
-  // });
+  const [region, setRegion] = useState({
+    latitude: 16.0739,
+    longitude: 108.1499,
+    latitudeDelta: 0.15,
+    longitudeDelta: 0.121,
+  });
   const [origin, setOrigin] = useState({
     latitude: 16.0780883,
     longitude: 108.0863317,
@@ -32,7 +34,8 @@ export default function Homepage({navigation}) {
   const [address, setAddress] = useState('');
   const [PGranted, setPGranted] = useState();
   const BingMapsAPIKey =
-    'AuCD3WhuOOT5HhbRcvJAt1DyK293gMNSAfPSTcgaXGlrVlVTRpXs06BWdTexjaOA';
+    'Atws9_ZZn1gAz8WqRILVYsK5dWLadMusnQop4P4RxkaaPtGXnWFS9QmnS4QLWTvy';
+
   async function checkLocationPermissions() {
     let granted = await getLocationPermissions();
     setPGranted(granted);
@@ -44,9 +47,7 @@ export default function Homepage({navigation}) {
   async function getLocationPermissions() {
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    ).catch(err => {
-      console.log(err);
-    });
+    ).catch(err => {});
     return granted === PermissionsAndroid.RESULTS.GRANTED;
   }
 
@@ -60,15 +61,30 @@ export default function Homepage({navigation}) {
           latitude: location.latitude,
           longitude: location.longitude,
         });
+        // console.log(location);
       })
-      .catch(error => {
-        const {code, message} = error;
-        console.warn(code, message);
-      });
+      .catch(error => {});
   }
   useEffect(() => {
     //lấy vị trí hiện tại của điện thoại
     checkLocationPermissions();
+
+    // lấy tọa độ từ firebase
+    database()
+      .ref('/')
+      .on(
+        'value',
+        snapshot => {
+          const data = snapshot.val();
+          setDestination({
+            latitude: data.Latitude,
+            longitude: data.Longitude,
+          });
+        },
+        error => {
+          console.log(error);
+        },
+      );
 
     //tìm kiếm địa chỉ từ location của đính đến
     const location = `${destination.latitude},${destination.longitude}`;
@@ -84,13 +100,18 @@ export default function Homepage({navigation}) {
           const result = data.resourceSets[0].resources[0];
           const address = result.name;
           setAddress(address);
+          setRegion({
+            ...region,
+            latitude: destination.latitude,
+            longitude: destination.longitude,
+          });
         } else {
           console.log('No results found');
         }
       })
-      .catch(error => console.log(error));
+      .catch(error => {});
 
-    //tìm kiếm tuyến đường giữa 2 điểm
+    // tìm kiếm tuyến đường giữa 2 điểm
     axios
       .get(
         `https://dev.virtualearth.net/REST/v1/Routes/Driving?wp.0=${origin.latitude},${origin.longitude}&wp.1=${destination.latitude},${destination.longitude}&routePathOutput=Points&travelMode=driving&key=${BingMapsAPIKey}`,
@@ -100,10 +121,8 @@ export default function Homepage({navigation}) {
           response.data.resourceSets[0].resources[0].routePath.line.coordinates;
         setPoints(points);
       })
-      .catch(error => {
-        console.log(error);
-      });
-  }, []);
+      .catch(error => {});
+  }, [destination]);
 
   return (
     <ScrollView>
@@ -168,16 +187,9 @@ export default function Homepage({navigation}) {
           showsMyLocationButton={true}
           provider={PROVIDER_GOOGLE}
           style={styles.map}
-          region={{
-            latitude: 16.0739,
-            longitude: 108.1499,
-            latitudeDelta: 0.15,
-            longitudeDelta: 0.121,
-          }}
-          // onPress={e => setMarket(e.nativeEvent.coordinate)}
+          region={region}
+          // onPress={e => setDestination(e.nativeEvent.coordinate)}
         >
-          {/* {market !== undefined ? <Marker coordinate={market} /> : null} */}
-          {/* <Marker coordinate={origin} /> */}
           <Marker coordinate={destination} />
           <Polyline
             coordinates={points.map(point => {
@@ -186,8 +198,8 @@ export default function Homepage({navigation}) {
                 longitude: point[1],
               };
             })}
-            strokeColor="#F00"
-            strokeWidth={4}
+            strokeColor="#1994e0"
+            strokeWidth={5}
           />
         </MapView>
       </View>

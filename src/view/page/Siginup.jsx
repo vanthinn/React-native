@@ -62,17 +62,20 @@ export default function Signup({navigation}) {
       auth()
         .createUserWithEmailAndPassword(Email, Password)
         .then(data => {
+          Toast.show({
+            type: 'success',
+            text1: 'Sgin up Successfull  👋',
+            visibilityTime: 2000,
+            autoHide: true,
+            topOffset: 30,
+          });
           console.log(data);
         })
-        .catch(error => alert(error.message));
-
-      Toast.show({
-        type: 'success',
-        text1: 'Sgin up Successfull  👋',
-        visibilityTime: 2000,
-        autoHide: true,
-        topOffset: 30,
-      });
+        .catch(error => {
+          Alert.alert('Error', `${error.message}`, [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ]);
+        });
     }
   };
   return (
